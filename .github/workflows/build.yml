@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - "src/program/**"  # Only trigger if files in this folder change
+      - "src/program/**"
   pull_request:
     branches:
       - main
@@ -13,7 +13,7 @@ on:
       - "src/program/**"
 
 permissions:
-  contents: write  # Required to create a release
+  contents: write
 
 jobs:
   build:
