@@ -4,9 +4,16 @@ on:
   push:
     branches:
       - main
+    paths:
+      - "src/program/**"  # Only trigger if files in this folder change
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "src/program/**"
 
 permissions:
-  contents: write
+  contents: write  # Required to create a release
 
 jobs:
   build:
