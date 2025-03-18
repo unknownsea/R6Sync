@@ -1,18 +1,19 @@
-name: Build EXE
+name: Build and Release EXE
 
 on:
   push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-  workflow_dispatch:
+    branches:
+      - main  # Change if needed
+
+permissions:
+  contents: write  # Required to create a release
 
 jobs:
   build:
     runs-on: windows-latest
 
     steps:
-      - name: Check out the code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Set up Python
@@ -31,15 +32,36 @@ jobs:
           echo "Build complete. Checking dist directory:"
           dir dist
 
-      - name: Create Git Tag
-        run: |
-          tag=$(date +'%Y%m%d%H%M%S')  # Tag format: YYYYMMDDHHMMSS
-          git tag $tag
-          git push origin $tag
+      - name: Capture build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: r6sync-exe
+          path: dist/r6sync.exe
 
-      - name: Upload Release Asset
-        uses: softprops/action-gh-release@v1
+  release:
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write  # Required for creating a release
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: r6sync-exe
+          path: dist/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
         with:
           files: dist/r6sync.exe
+          tag_name: r6sync-v1.0.${{ github.run_number }}  # Custom tag format
+          name: r6sync v1.0.${{ github.run_number }}  # Custom release name
+          body: "Automatically generated release for r6sync."
+          draft: false
+          prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
