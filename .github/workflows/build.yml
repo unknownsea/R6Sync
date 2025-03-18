@@ -1,0 +1,35 @@
+name: Build EXE
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.x
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pyinstaller
+
+      - name: Build EXE with PyInstaller
+        run: |
+          pyinstaller --onefile src/program/main.py --name r6sync
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: r6sync
+          path: dist/r6sync.exe
