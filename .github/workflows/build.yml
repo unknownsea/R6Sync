@@ -27,8 +27,11 @@ jobs:
       - name: Build EXE with PyInstaller
         run: |
           pyinstaller --onefile src/program/main.py --name r6sync
+          echo "Build complete. Checking dist directory:"
+          dir dist
 
       - name: Upload artifact
+        if: always()
         uses: actions/upload-artifact@v3
         with:
           name: r6sync
