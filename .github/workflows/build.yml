@@ -3,10 +3,10 @@ name: Build and Release EXE
 on:
   push:
     branches:
-      - main  # Change if needed
+      - main
 
 permissions:
-  contents: write  # Required to create a release
+  contents: write
 
 jobs:
   build:
@@ -42,7 +42,7 @@ jobs:
     needs: build
     runs-on: ubuntu-24.04
     permissions:
-      contents: write  # Required for creating a release
+      contents: write
 
     steps:
       - name: Checkout repository
@@ -58,9 +58,9 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: dist/r6sync.exe
-          tag_name: r6sync-v1.0.${{ github.run_number }}  # Custom tag format
-          name: r6sync v1.0.${{ github.run_number }}  # Custom release name
-          body: "Automatically generated release for r6sync."
+          tag_name: r6sync-v1.0.${{ github.run_number }}
+          name: r6sync v1.0.${{ github.run_number }}
+          body: "R6Sync has updated."
           draft: false
           prerelease: false
         env:
